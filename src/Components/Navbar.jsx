@@ -18,6 +18,7 @@ const pages = [
   { name: "Rapor", path: "/report" },
   { name: "Randevu", path: "/appointment" },
   { name: "Aşı", path: "/vaccine" },
+  { name: "Müsait Gün", path: "/availableDate" },
   
 ];
 const settings = [
