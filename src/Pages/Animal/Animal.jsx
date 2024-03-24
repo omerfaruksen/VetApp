@@ -130,10 +130,9 @@ function Animal() {
     };
     
     const filteredAnimals = animal.filter((item) => {
-      return item.name.toLowerCase().includes(searchTerm.toLowerCase());
+      return item.name && item.name.toLowerCase().includes(searchTerm.toLowerCase());
     });
-
-
+    
   return (
     <div>
       <h1>Animal</h1>
@@ -176,11 +175,11 @@ function Animal() {
         name="colour"
         value={newAnimal.colour}
         onChange={handleNewAnimal}  />
-        {/* Yazarları select options olarak listeledik */}
+        {/* Müşterileri select options olarak listeledik */}
         <select name="customer" 
         value={newAnimal?.customer?.id} 
         onChange={handleNewAnimal}>
-          <option value="" disabled> Select Customer
+          <option value="" > Select Customer
           </option>
           {customer.map((customer) => (
             <option key={customer.id} value={customer.id}>
@@ -253,7 +252,24 @@ function Animal() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-      
+      {/* <div>
+        {animal.map((animal) =>(
+            <div
+            id={animal.id} 
+            onClick={(e) => handleDelete(e)} 
+            key={animal.id}>
+                 {animal.name} {animal.species} {animal.breed} {animal.dateOfBirth}{animal.gender}{animal.colour}
+                 <p>Müşteri: {animal.customer ? animal.customer.name : ''}</p>
+            <span id={animal.id}
+            onClick={() => handleDelete(animal.id)}>
+             <DeleteIcon/>
+            </span>
+            <span onClick={() => handleUpdateBtn(animal)}>
+              <UpdateIcon/>
+              </span>
+        </div>
+        ))}
+      </div> */}
       <div>
         {filteredAnimals.map((animal) => (
           <div key={animal.id}>

@@ -7,6 +7,8 @@ import Navbar from './Components/Navbar'
 import Doctor from './Pages/Doctor/Doctor'
 import Appointment from './Pages/Appointment/Appointment'
 import AvailableDate from './Pages/AvailableDate/AvailableDate'
+import Report from './Pages/Report/Report'
+import Vaccine from './Pages/Vaccine/Vaccine'
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
       <Route path="/doctor" element={<Doctor/>} />
       <Route path="/appointment" element={<Appointment/>} />
       <Route path="/availableDate" element={<AvailableDate/>} />
+      <Route path="/report" element={<Report/>} />
+      <Route path="/vaccine" element={<Vaccine/>} />
     </Routes>
     
       

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { getCustomer, deleteCustomer, createCustomer, updateCustomerFunc } from "../../API/customer";
+import { getCustomer, deleteCustomer, createCustomer, updateCustomerFunc ,searchCustomerByName } from "../../API/customer";
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/Update';
 
@@ -20,6 +20,7 @@ function Customer() {
     address:"", 
     city:""
   });
+  const [searchName, setSearchName]= useState ("");
 
   useEffect(() => {
     //Dosyalşarı çektiğimiz kısım
@@ -51,7 +52,7 @@ function Customer() {
       city:""
     });
   };
-
+  
 
   //Yeni Müşteri Ekleme
   const handleNewCustomer = (event) =>{
@@ -61,6 +62,20 @@ function Customer() {
     });
     
   };
+//ARAMA 
+const handleSearch = (event) => {
+  setSearchName(event.target.value);
+};
+
+const handleSearchBtn = () => {
+  searchCustomerByName(searchName).then((data) => {
+    setCustomer(data);
+  }).catch((error) => {
+    console.error("Error while searching customer by name:", error);
+  });
+};
+
+
 
   const handleCreate =() =>{
     createCustomer(newCustomer).then(() => {
@@ -161,6 +176,12 @@ function Customer() {
       <div>
         <br />
         <h3>Customers</h3>
+        <input type="text"
+        placeholder="SearchName"
+        name="search"
+        value={searchName.name}
+        onChange={handleSearch} />
+        <button onClick={handleSearchBtn}>Search</button>
         <br />
         {customer.map((customer) => (
           <div
