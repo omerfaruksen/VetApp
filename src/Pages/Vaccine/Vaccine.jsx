@@ -18,6 +18,7 @@ function Vaccine() {
         animal: { id: "" },
         reportId: ""
     })
+    
 
     useEffect(() => {
         getVaccine().then((data) => {
@@ -166,25 +167,25 @@ function Vaccine() {
             <input type="text"
                     name="name"
                     placeholder="Name"
-                    value={newVaccine.name}
+                    value={updateVaccine.name}
                     onChange={handleUpdateChange} />
                 <input type="text"
                     name="code"
                     placeholder="Code"
-                    value={newVaccine.code}
+                    value={updateVaccine.code}
                     onChange={handleUpdateChange} />
                 <input type="date"
                     name="protectionStartDate"
                     placeholder="Protection Start Date"
-                    value={newVaccine.protectionStartDate}
+                    value={updateVaccine.protectionStartDate}
                     onChange={handleUpdateChange} />
                 <input type="date"
                     name="protectionFinishDate"
                     placeholder="Protection Finish Date"
-                    value={newVaccine.protectionFinishDate}
+                    value={updateVaccine.protectionFinishDate}
                     onChange={handleUpdateChange} />
                 <select name="animal"
-                    value={newVaccine.animal}
+                    value={updateVaccine.animal}
                     onChange={handleUpdateChange}>
                     <option value="">Select Animal</option>
                     {animal.map((animal) => (
