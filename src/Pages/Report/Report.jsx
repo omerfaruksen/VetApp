@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { createReport, getReport, deleteReport, updateReportFunc} from "../../API/report";
+import { createReport, getReport, deleteReport, updateReportFunc } from "../../API/report";
 import { getAppointment } from "../../API/appointment";
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/Update';
+
 
 function Report() {
     const [report, setReport] = useState([]);
@@ -13,11 +14,12 @@ function Report() {
         price: "",
         appointment: ""
     });
-    const [updateReport, setUpdateReport] = useState({
+    const [updateReportData, setUpdateReportData] = useState({
+        id: "",
         diagnosis: "",
         price: "",
         appointment: ""
-    })
+    });
 
     useEffect(() => {
         getReport().then((data) => {
@@ -35,71 +37,58 @@ function Report() {
             [name]: value
         }));
     };
-    //Delete işlemi
+
     const handleDelete = (id) => {
-      
         deleteReport(id).then(() => {
-          setReload(true);
+            setReload(!reload);
         });
-      };
+    };
 
-      //Update İşlemi
-      const handleUpdate =() =>{
-        updateReportFunc(updateReport).then(()=>{
-          setReload(true);
-        });
-        
-        setUpdateReport({
-            diagnosis: "",
-            price: "",
-            appointment: ""
-        });
-      };
-
-      const handleUpdateBtn =(report) =>{
-    
-        setUpdateReport({
-            diagnosis: report.diagnosis,
-            price:report.price,
-            appointment:report.appointment,
-        });
-      };
-
-      const handleUpdateChange = (event) => {
-        const { name, value } = event.target;
-        if (name === "appointment") {
-          setUpdateReport((prevReport) => ({
-            ...prevReport,
-            appointment:{
-                id: value,
-            }
-          }));
-        } else {
-          setUpdateReport({
-            ...updateReport,
-            [name]: value,
-          });
+    const handleUpdate = () => {
+        console.log(updateReportData)
+        const newObj={
+            id:updateReportData.id,
+            diagnosis: updateReportData.diagnosis,
+             price: updateReportData.price,
+             appointmentId: updateReportData.appointmentForReportResponseDto?.id
         }
-      };
+        console.log(newObj)
+        updateReportFunc(newObj)
+            .then(() => {
+                setReload(true);
+                // Update işlemi sonrasında updateReportData nesnesini temizleme
+                setUpdateReportData({
+                    id: "",
+                    diagnosis: "",
+                    price: "",
+                    appointment: updateReportData.appointment // Randevu bilgisini temizleme
+                });
+            })
+            .catch((error) => {
+                console.error("Güncelleme işlemi sırasında bir hata oluştu:", error);
+            });
+    };
+    
 
-
+    const handleUpdateBtn = (rep) => {
+        setUpdateReportData({
+            ...rep,
+            // rep.appointmentId alanını kontrol etmek yerine rep.appointment alanını kontrol etmek daha doğru
+            appointment: rep.appointment ? { id: rep.appointment.id } : {}
+        });
+    };
+    
     const handleCreate = () => {
-        // Seçilen hayvana ait appointment'ın id'sini al
+        console.log(report)
         const selectedAppointmentId = newReport.appointment;
-        
-        // Yeni rapor objesini oluştur
         const newReportData = {
             diagnosis: newReport.diagnosis,
             price: newReport.price,
             appointmentId: selectedAppointmentId
         };
-
-        // Raporu oluştur ve POST isteğini gönder
         createReport(newReportData).then(() => {
             setReload(!reload);
         });
-
-        // Yeni rapor formunu sıfırla
         setNewReport({
             diagnosis: "",
             price: "",
@@ -107,73 +96,115 @@ function Report() {
         });
     };
 
+    const handleUpdateChange = (event) => {
+        const { name, value } = event.target;
+        if (name === "appointment") {
+            // Seçilen randevunun id'sini alarak updateReportData'ya atayın
+            const selectedAppointment = appointments.find(appointment => appointment.id === value);
+            const appointmentId = selectedAppointment ? selectedAppointment.id : null;
+            setUpdateReportData((prevReport) => ({
+                ...prevReport,
+                appointment: appointmentId // Seçilen randevu id'sini set edin
+            }));
+        } else {
+            setUpdateReportData({
+                ...updateReportData,
+                [name]: value,
+            });
+        }
+    };
+
     return (
         <div>
-            <h3>Reports</h3>
-            <div>
+            <h1 className="başlık">Rapor Yönetimi</h1> <br />
+            <h3>Rapor Ekleme</h3>
+            <div  className="animal-newanimal">
                 <div>
-                    <input 
+                    <input
                         type="text"
-                        placeholder="Diagnosis"
+                        placeholder="Teşhis"
                         name="diagnosis"
                         value={newReport.diagnosis}
                         onChange={handleNewReport} />
-                    <input 
+                    <input
                         type="text"
-                        placeholder="Price"
+                        placeholder="Fiyat"
                         name="price"
                         value={newReport.price}
-                        onChange={handleNewReport} />
-                    <select 
-                        name="appointment" 
+                        onChange={handleNewReport} /> <br />
+                    <select className="report-select"
+                        name="appointment"
                         value={newReport.appointment}
                         onChange={handleNewReport}>
-                        <option value="" disabled>Select Appointment</option>
+                        <option value="" disabled>Randevu Seç</option>
                         {appointments.map((appointment) => (
                             <option key={appointment.id} value={appointment.id}>
                                 {appointment.animal.name}
                             </option>
                         ))}
-                    </select>
-                    <button onClick={handleCreate}>Add Report</button>
+                    </select> <br />
+                    <button onClick={handleCreate}>Rapor Ekle</button>
+                    </div>
                 </div>
                 <div>
-                    <input 
+                    <input
                         type="text"
-                        placeholder="Diagnosis"
+                        placeholder="Teşhis"
                         name="diagnosis"
-                        value={updateReport.diagnosis}
+                        value={updateReportData.diagnosis}
                         onChange={handleUpdateChange} />
-                    <input 
+                    <input
                         type="text"
-                        placeholder="Price"
+                        placeholder="Fiyat"
                         name="price"
-                        value={updateReport.price}
-                        onChange={handleUpdateChange} />
-                    <select 
-                        name="appointment" 
-                        value={updateReport.appointment}
+                        value={updateReportData.price}
+                        onChange={handleUpdateChange} /> <br />
+                    <select className="report-select"
+                        name="appointment"
+                        value={updateReportData.appointment}
                         onChange={handleUpdateChange}>
-                        <option value="" disabled>Select Appointment</option>
+                        <option value="" disabled>Randevu Seç</option>
                         {appointments.map((appointment) => (
                             <option key={appointment.id} value={appointment.id}>
                                 {appointment.animal.name}
                             </option>
                         ))}
                     </select>
-                    <button onClick={handleUpdate}>Update Report</button>
+                    <br />
+                    <button onClick={handleUpdate}>Rapor Güncelle</button>
+                <br />
                 </div>
-                {report.map((report) => (
-                    <div key={report.id}>
-                        {report.diagnosis} {report.price}
-                        <span id={report.id} onClick={() => handleDelete(report.id)}>
-                        <DeleteIcon/>
-                        </span>
-                        <span onClick={() => handleUpdateBtn(report)}>
-                        <UpdateIcon/>
-                    </span>
-                    </div>
-                ))}
+                <div>
+            <br />
+          <h3>Rapor Listesi</h3>
+          <br />
+                <table className="min-nav">
+                    <thead>
+                        <tr>
+                            <th>Teşhis</th>
+                            <th>Fiyat</th>
+                            <th>Randevu</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {report.map((report) => (
+                            <tr key={report.id}>
+                                <td>{report.diagnosis}</td>
+                                <td>{report.price}</td>
+                                <td>{report.appointment ? report.appointment.animal.name : ""}</td>
+                                <td>
+                                    <span onClick={() => handleDelete(report.id)} style={{ cursor: 'pointer' }}>
+                                        <DeleteIcon />
+                                    </span>
+                                    <span onClick={() => handleUpdateBtn(report)} style={{ cursor: 'pointer' }}>
+                                        <UpdateIcon />
+                                    </span>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

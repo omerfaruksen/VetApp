@@ -1,29 +1,34 @@
 import axios from "axios";
 
 export const getCustomer= async () =>{
-    const {data} = await axios.get("http://localhost:8080/api/v1/customers");
+    const {data} = await axios.get(
+        import.meta.env.VITE_APP_BASE_URL + "/api/v1/customers");
     return data;
 };
 
 export const deleteCustomer = async (id) => {
-    const {data} = await axios.delete(`http://localhost:8080/api/v1/customers/${id}`);
+    const {data} = await axios.delete(
+        import.meta.env.VITE_APP_BASE_URL + `/api/v1/customers/${id}`);
     return data;
 };
 
 export const createCustomer = async (customer) => {
-    const {data} = await axios.post(`http://localhost:8080/api/v1/customers` , customer);
+    const {data} = await axios.post(
+        import.meta.env.VITE_APP_BASE_URL + `/api/v1/customers` , customer);
     return data;
 };
 
 export const updateCustomerFunc = async (customer) => {   
-    const {data} =await axios.put(`http://localhost:8080/api/v1/customers/${customer.id}`, customer);
+    const {data} =await axios.put(
+        import.meta.env.VITE_APP_BASE_URL + `/api/v1/customers/${customer.id}`, customer);
     
     return data;
 };
 
 export const searchCustomerByName = async (name) => {
     try {
-        const response = await axios.get(`http://localhost:8080/api/v1/customers/searchByName?name=${name}`);
+        const response = await axios.get(
+            import.meta.env.VITE_APP_BASE_URL + `/api/v1/customers/searchByName?name=${name}`);
         return response.data;
     } catch (error) {
         console.error("Error while searching customer by name:", error);

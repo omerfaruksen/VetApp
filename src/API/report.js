@@ -1,23 +1,27 @@
 import axios from "axios";
 
 export const getReport = async () =>{
-    const {data} = await axios.get ("http://localhost:8080/api/v1/reports");
+    const {data} = await axios.get (
+        import.meta.env.VITE_APP_BASE_URL + "/api/v1/reports");
     return data;
 };
 
 export const createReport = async (report) =>{
-    const {data} = await axios.post(`http://localhost:8080/api/v1/reports`
+    const {data} = await axios.post(
+        import.meta.env.VITE_APP_BASE_URL + `/api/v1/reports`
     , report);
     return data;
 };
 
 export const deleteReport= async (id) => {
-    const {data} = await axios.delete(`http://localhost:8080/api/v1/reports/${id}`
+    const {data} = await axios.delete(
+        import.meta.env.VITE_APP_BASE_URL + `/api/v1/reports/${id}`
     );
     return data;
 };
 
 export const updateReportFunc = async (report) => {   
-    const {data} =await axios.put(`http://localhost:8080/api/v1/reports/${report.id}`, report);
+    const {data} =await axios.put(
+        import.meta.env.VITE_APP_BASE_URL + `/api/v1/reports/${report.id}`, report);
     return data;
 };

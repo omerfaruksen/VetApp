@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { getAnimals, deleteAnimal, createAnimal, updateAnimalFunc} from "../../API/animal";
+import { getAnimals, deleteAnimal, createAnimal, updateAnimalFunc,searchAnimalByName } from "../../API/animal";
 import { getCustomer } from "../../API/customer";
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/Update';
@@ -25,7 +25,7 @@ function Animal() {
       colour:""
     });
 
-    const [searchTerm, setSearchTerm] = useState(""); // Arama terimi için state
+    
 
     useEffect(()=> {
         //Dataları Çektiğimiz Kısım
@@ -60,6 +60,18 @@ function Animal() {
         colour:""
       })
     };
+    //Animal Arama başlangıç
+    const [searchAnimalName, setSearhcAnimalName]= useState("");
+
+    const handleAnimalSearch = (event) => {
+      setSearhcAnimalName(event.target.value);
+    };
+    const handleAnimalSearchBtn = () => {
+      searchAnimalByName(searchAnimalName).then((data)=> {
+        setAnimal(data);
+      })
+    }
+    //Animal Arama bitiş
     //Update Animal
     const handleUpdate =() =>{
       updateAnimalFunc(updateAnimal).then(()=>{
@@ -129,9 +141,7 @@ function Animal() {
       }
     };
     
-    const filteredAnimals = animal.filter((item) => {
-      return item.name && item.name.toLowerCase().includes(searchTerm.toLowerCase());
-    });
+    
     
   return (
     <div>
@@ -230,7 +240,7 @@ function Animal() {
         name="colour"
         value={updateAnimal.colour}
         onChange={handleUpdateChange}  />
-        {/* Yazarları select options olarak listeledik */}
+        {/* Customer select options olarak listelemdi */}
         <select name="customer" 
         value={updateAnimal?.customer?.id} 
         onChange={handleUpdateChange}>
@@ -246,17 +256,23 @@ function Animal() {
         <button onClick={handleUpdate}>Update</button>
       </div>
       <div>
-        <input
-          type="text"
-          placeholder="Search by name"
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        <br />
+        <h3>Search</h3>
       </div>
-      {/* <div>
+      <br />
+      <div>
+        <input type="text"
+        placeholder="Search Animal Name"
+        value={searchAnimalName} 
+        onChange={handleAnimalSearch}/>
+        <button onClick={handleAnimalSearchBtn}>Search Animal</button>
+      </div>
+      <div>
+        <h3>Animals List</h3>
+
         {animal.map((animal) =>(
             <div
-            id={animal.id} 
-            onClick={(e) => handleDelete(e)} 
+            id={animal.id}  
             key={animal.id}>
                  {animal.name} {animal.species} {animal.breed} {animal.dateOfBirth}{animal.gender}{animal.colour}
                  <p>Müşteri: {animal.customer ? animal.customer.name : ''}</p>
@@ -269,21 +285,8 @@ function Animal() {
               </span>
         </div>
         ))}
-      </div> */}
-      <div>
-        {filteredAnimals.map((animal) => (
-          <div key={animal.id}>
-            {animal.name} {animal.species} {animal.breed} {animal.dateOfBirth} {animal.gender} {animal.colour}
-            <p>Müşteri: {animal.customer ? animal.customer.name : ''}</p>
-            <span id={animal.id} onClick={() => handleDelete(animal.id)}>
-              <DeleteIcon/>
-            </span>
-            <span onClick={() => handleUpdateBtn(animal)}>
-              <UpdateIcon/>
-            </span>
-          </div>
-        ))}
       </div>
+      
     </div>
   )
 }
