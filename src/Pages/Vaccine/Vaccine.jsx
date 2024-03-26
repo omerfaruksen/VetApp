@@ -195,7 +195,7 @@ function Vaccine() {
                     ))}
                 </select>
                 <select name="reportId" // Rapora ait id alanı
-                    value={newVaccine?.reportId}
+                    value={updateVaccine?.reportId}
                     onChange={handleUpdateChange}>
                     <option value="">Select Report</option>
                     {reportList.map((report) => (
